@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { RefObject } from "react";
 
 // Drop zone overlays the surrogate frame when no remote source is wired.

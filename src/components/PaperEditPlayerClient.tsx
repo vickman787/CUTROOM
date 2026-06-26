@@ -46,7 +46,6 @@ export function PaperEditPlayerClient({
 
   useEffect(() => {
     setFallbackUrl(null);
-    setPendingPlay(playing);
   }, [clip?.reel.id, clip?.select.sourcePath]);
 
   useEffect(() => {
