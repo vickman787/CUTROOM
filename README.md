@@ -44,13 +44,21 @@ Start the dev server:
 npm.cmd run dev
 ```
 
-Open:
+Open locally:
 
 ```text
 http://localhost:3000
 ```
 
 If another port is already in use, Next may start on another port such as `3003`.
+
+## Production
+
+Deployed app:
+
+```text
+https://cutroom-steel.vercel.app/
+```
 
 ## Environment Variables
 
