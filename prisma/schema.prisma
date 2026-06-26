@@ -1,0 +1,104 @@
+// CUTROOM persistence schema. Maps directly to domain types in
+// src/domain/types.ts. JSON columns store the structured analysis data
+// that Claude returns — denormalized for simplicity.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Project {
+  id                String           @id @default(cuid())
+  slug              String           @unique
+  title             String
+  subtitle          String
+  logline           String
+  director          String           @default("")
+  productionCompany String           @default("")
+  shotAround        String           @default("")
+  mode              String           @default("local-mock")
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  reels             Reel[]
+  selects           Select[]
+  paperEdit         PaperEditEntry[]
+  treatment         Treatment?
+  archive           ArchiveEntry[]
+}
+
+model Reel {
+  id               String   @id @default(cuid())
+  projectId        String
+  project          Project  @relation(fields: [projectId], references: [id])
+  number           Int
+  label            String
+  shotOn           String
+  location         String
+  durationMs       Int
+  recordedAt       DateTime
+  videoPath        String?  // local file path or Shelby blob path for uploaded source
+  posterPalette    String   @default("[\"#241a13\",\"#7a3b1a\",\"#d6a85b\"]") // JSON: [string, string, string]
+  speakers         String   // JSON: Speaker[]
+  segments         String   // JSON: TranscriptSegment[]
+  scenes           String   // JSON: Scene[]
+  themes           String   // JSON: Theme[]
+  claims           String   // JSON: Claim[]
+  contradictions   String   // JSON: Contradiction[]
+  quotations       String   // JSON: Quotation[]
+  suggestedSelects String   // JSON: SuggestedSelect[]
+  warnings         String   // JSON: string[]
+  selects          Select[]
+}
+
+model Select {
+  id          String           @id @default(cuid())
+  projectId   String
+  project     Project          @relation(fields: [projectId], references: [id])
+  reelId      String
+  reel        Reel             @relation(fields: [reelId], references: [id])
+  sourcePath  String?
+  inMs        Int
+  outMs       Int
+  speakerId   String
+  quote       String
+  notes       String           @default("")
+  createdAt   DateTime         @default(now())
+  paperEdit   PaperEditEntry[]
+}
+
+model PaperEditEntry {
+  id          String   @id @default(cuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+  act         Int
+  position    Int
+  selectId    String
+  select      Select   @relation(fields: [selectId], references: [id])
+  beat        String   @default("")
+}
+
+model Treatment {
+  id          String   @id @default(cuid())
+  projectId   String   @unique
+  project     Project  @relation(fields: [projectId], references: [id])
+  body        String   // JSON: { logline, paragraphs: TreatmentParagraph[] }
+  updatedAt   DateTime @updatedAt
+}
+
+model ArchiveEntry {
+  id          String   @id @default(cuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+  label       String
+  kind        String   // "footage" | "transcript" | "treatment" | "manifest"
+  blobPath    String
+  owner       String
+  commitment  String
+  status      String
+  sizeBytes   BigInt
+  expiresAt   DateTime
+}

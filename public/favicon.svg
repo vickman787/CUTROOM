@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="8" fill="#efe7d3"/>
+  <rect x="9" y="13" width="46" height="38" fill="#171411"/>
+  <path d="M9 13h46v6H9zM9 45h46v6H9z" fill="url(#sprockets)" opacity=".9"/>
+  <text x="32" y="39" text-anchor="middle" font-family="Arial Narrow, Impact, sans-serif" font-size="19" font-weight="700" letter-spacing="3" fill="#efe7d3">CUT</text>
+  <rect x="37" y="8" width="7" height="50" fill="#c8331e" transform="rotate(14 40.5 33)" opacity=".95"/>
+  <defs>
+    <pattern id="sprockets" width="10" height="6" patternUnits="userSpaceOnUse">
+      <rect width="4" height="6" fill="#efe7d3"/>
+    </pattern>
+  </defs>
+</svg>

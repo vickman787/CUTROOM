@@ -1,0 +1,222 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CUTROOM visual system — paper, ink, masking tape, one vermilion. */
+
+:root {
+  --paper: #efe7d3;
+  --paper-warm: #f3ecdb;
+  --paper-deep: #e6dcc1;
+  --paper-edge: #ddd2b3;
+  --ink: #171411;
+  --ink-soft: #2a2520;
+  --graphite: #6a635a;
+  --graphite-light: #8d867b;
+  --tape: #d6c79a;
+  --tape-dark: #b9a978;
+  --vermilion: #c8331e;
+  --vermilion-deep: #a52414;
+  --reel: #1c1814;
+  --grease: #2f2820;
+}
+
+html, body { background: var(--paper); color: var(--ink); }
+
+body {
+  font-family: var(--font-serif), "EB Garamond", Georgia, serif;
+  font-feature-settings: "onum" 1, "liga" 1;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(0,0,0,0.04), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(0,0,0,0.04), transparent 40%),
+    repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,0.012) 0 1px, transparent 1px 3px);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--vermilion); color: var(--paper); }
+
+.crop-frame { position: relative; }
+.crop-frame::before,
+.crop-frame::after,
+.crop-frame > .crop-tr,
+.crop-frame > .crop-bl,
+.crop-frame > .crop-br {
+  content: "";
+  position: absolute;
+  width: 14px; height: 14px;
+  border-color: var(--ink);
+  border-style: solid;
+  pointer-events: none;
+}
+.crop-frame::before { top: -8px; left: -8px; border-width: 1px 0 0 1px; }
+.crop-frame::after  { top: -8px; right: -8px; border-width: 1px 1px 0 0; }
+.crop-frame > .crop-bl { bottom: -8px; left: -8px; border-width: 0 0 1px 1px; }
+.crop-frame > .crop-br { bottom: -8px; right: -8px; border-width: 0 1px 1px 0; }
+
+.sprocket-strip {
+  background:
+    repeating-linear-gradient(
+      to right,
+      transparent 0 14px,
+      var(--paper) 14px 18px,
+      transparent 18px 32px
+    ),
+    var(--reel);
+  background-size: 32px 100%;
+}
+.sprocket-strip-v {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 14px,
+      var(--paper) 14px 18px,
+      transparent 18px 32px
+    ),
+    var(--reel);
+  background-size: 100% 32px;
+}
+
+.tape {
+  background: var(--tape);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.06),
+    0 1px 0 rgba(0,0,0,0.05);
+  font-family: var(--font-grotesk), "Barlow Condensed", "Helvetica Neue Condensed", sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.tape-rip {
+  clip-path: polygon(
+    2% 0%, 98% 6%, 100% 50%, 96% 96%, 50% 100%, 4% 92%, 0% 50%, 2% 4%
+  );
+}
+
+.grain { position: relative; }
+.grain::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@keyframes projector-flicker {
+  0%, 96%, 100% { filter: none; }
+  97% { filter: brightness(0.94) contrast(1.02); }
+  98% { filter: brightness(1.03); }
+  99% { filter: brightness(0.9); }
+}
+.projector { animation: projector-flicker 4.5s linear infinite; }
+
+@keyframes sprocket-drift {
+  from { background-position: 0 0; }
+  to { background-position: 32px 0; }
+}
+.sprocket-drift { animation: sprocket-drift 1.6s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .projector, .sprocket-drift { animation: none !important; }
+}
+
+.grease-mark { position: absolute; inset: 0; pointer-events: none; }
+.grease-mark::before {
+  content: "";
+  position: absolute; inset: 4px;
+  border: 3px solid var(--vermilion);
+  border-radius: 2px;
+  transform: rotate(-1.4deg);
+  opacity: 0.92;
+}
+.grease-mark::after {
+  content: "";
+  position: absolute; top: -10px; right: -8px;
+  width: 40px; height: 22px;
+  background: var(--vermilion);
+  opacity: 0.78;
+  clip-path: polygon(0 50%, 18% 0, 100% 22%, 92% 92%, 12% 100%);
+  transform: rotate(-7deg);
+}
+
+.tc {
+  font-family: var(--font-grotesk), monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+.seam {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.18), rgba(0,0,0,0));
+  height: 6px;
+}
+
+.transcript-line { display: block; }
+.transcript-word {
+  display: inline;
+  color: var(--ink);
+  transition: background-color 80ms linear;
+  border-radius: 0;
+}
+.transcript-word.active {
+  background: var(--vermilion);
+  color: var(--paper);
+  box-shadow: 0 0 0 1px var(--vermilion);
+}
+.transcript-word.in-select { background: rgba(200, 51, 30, 0.14); }
+.transcript-word.in-supporting { background: rgba(0, 0, 0, 0.08); }
+
+.scrub {
+  appearance: none;
+  background: transparent;
+  width: 100%;
+  height: 22px;
+  cursor: pointer;
+}
+.scrub::-webkit-slider-runnable-track {
+  height: 4px;
+  background:
+    linear-gradient(to right, var(--vermilion) var(--played, 0%), var(--ink-soft) 0);
+}
+.scrub::-webkit-slider-thumb {
+  appearance: none;
+  width: 2px; height: 22px;
+  background: var(--paper);
+  border-left: 1px solid var(--ink);
+  border-right: 1px solid var(--ink);
+  margin-top: -9px;
+}
+.scrub::-moz-range-track { height: 4px; background: var(--ink-soft); }
+.scrub::-moz-range-progress { height: 4px; background: var(--vermilion); }
+.scrub::-moz-range-thumb {
+  width: 2px; height: 22px;
+  background: var(--paper);
+  border-left: 1px solid var(--ink);
+  border-right: 1px solid var(--ink);
+  border-radius: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+
+.edit-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 22px;
+  padding: 0 6px;
+  font-family: var(--font-grotesk), sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.worktable {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 22px, rgba(0,0,0,0.025) 22px 23px),
+    repeating-linear-gradient(90deg, transparent 0 60px, rgba(0,0,0,0.018) 60px 61px),
+    var(--paper-warm);
+}
