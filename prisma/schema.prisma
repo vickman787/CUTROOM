@@ -13,6 +13,7 @@ datasource db {
 
 model Project {
   id                String           @id @default(cuid())
+  ownerId           String?
   slug              String           @unique
   title             String
   subtitle          String
@@ -28,6 +29,8 @@ model Project {
   paperEdit         PaperEditEntry[]
   treatment         Treatment?
   archive           ArchiveEntry[]
+
+  @@index([ownerId])
 }
 
 model Reel {

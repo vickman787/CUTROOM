@@ -12,11 +12,11 @@ export interface CreateProjectInput {
   shotAround?: string;
 }
 
-export async function createProject(input: CreateProjectInput): Promise<Project> {
+export async function createProject(input: CreateProjectInput, ownerId: string): Promise<Project> {
   const { persistence } = getAdapters();
   const title = clean(input.title) || "Untitled Project";
   const baseSlug = slugify(title) || "untitled-project";
-  const slug = await uniqueSlug(baseSlug);
+  const slug = await uniqueSlug(baseSlug, ownerId);
   const projectId = `proj_${randomUUID()}`;
   const reelId = `reel_${randomUUID()}`;
   const now = new Date().toISOString();
@@ -56,7 +56,7 @@ export async function createProject(input: CreateProjectInput): Promise<Project>
     mode: persistence.mode,
   };
 
-  return persistence.createProject(project);
+  return persistence.createProject(project, ownerId);
 }
 
 function emptyAnalysis(): ReelAnalysis {
@@ -73,11 +73,11 @@ function emptyAnalysis(): ReelAnalysis {
   };
 }
 
-async function uniqueSlug(baseSlug: string): Promise<string> {
+async function uniqueSlug(baseSlug: string, ownerId: string): Promise<string> {
   const { persistence } = getAdapters();
   let slug = baseSlug;
   let suffix = 2;
-  while (await persistence.getProject(slug)) {
+  while (await persistence.getProject(slug, ownerId)) {
     slug = `${baseSlug}-${suffix}`;
     suffix += 1;
   }

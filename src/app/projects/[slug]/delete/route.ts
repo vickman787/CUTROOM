@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdapters } from "@/adapters";
+import { requireUserId } from "@/lib/auth";
 
 export async function POST(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { persistence } = getAdapters();
-  const project = await persistence.getProject(slug);
+  const project = await persistence.getProject(slug, await requireUserId());
   if (project) {
     await persistence.deleteProject(project.id);
   }

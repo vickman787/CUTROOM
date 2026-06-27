@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdapters } from "@/adapters";
+import { requireUserId } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
@@ -9,7 +10,7 @@ export async function GET(
 ) {
   const { slug, reelId } = await params;
   const { persistence, shelby } = getAdapters();
-  const project = await persistence.getProject(slug);
+  const project = await persistence.getProject(slug, await requireUserId());
   if (!project) return NextResponse.json({ error: "project not found" }, { status: 404 });
 
   const reel = project.reels.find((r) => r.id === reelId);

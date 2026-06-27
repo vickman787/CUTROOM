@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UserButton } from "@clerk/nextjs";
 import { Wordmark } from "./Wordmark";
 
 export function ReelHeader({
@@ -38,6 +39,7 @@ export function ReelHeader({
               {reelLabel}
             </span>
           )}
+          <UserButton />
         </div>
       </div>
     </header>

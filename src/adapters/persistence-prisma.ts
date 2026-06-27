@@ -54,9 +54,9 @@ function deserializeReelAnalysis(row: {
 
 // ── Project read ──
 
-async function readProject(slug: string): Promise<Project | null> {
-  const row = await prisma.project.findUnique({
-    where: { slug },
+async function readProject(slug: string, ownerId: string): Promise<Project | null> {
+  const row = await prisma.project.findFirst({
+    where: { slug, ownerId },
     include: {
       reels: { include: { selects: true } },
       selects: true,
@@ -171,10 +171,11 @@ function mapArchiveEntry(row: any): ArchiveEntry {
 
 // ── Project write (for seeding) ──
 
-async function writeProject(project: Project) {
+async function writeProject(project: Project, ownerId: string) {
   await prisma.project.create({
     data: {
       id: project.id,
+      ownerId,
       slug: project.slug,
       title: project.title,
       subtitle: project.subtitle,
@@ -249,8 +250,9 @@ async function writeProject(project: Project) {
 export class PrismaPersistenceAdapter implements PersistenceAdapter {
   mode = "live" as const;
 
-  async listProjects(): Promise<Project[]> {
+  async listProjects(ownerId: string): Promise<Project[]> {
     const rows = await prisma.project.findMany({
+      where: { ownerId },
       include: {
         reels: { include: { selects: true } },
         selects: true,
@@ -263,13 +265,13 @@ export class PrismaPersistenceAdapter implements PersistenceAdapter {
     return rows.map(mapProject);
   }
 
-  async getProject(slug: string): Promise<Project | null> {
-    return readProject(slug);
+  async getProject(slug: string, ownerId: string): Promise<Project | null> {
+    return readProject(slug, ownerId);
   }
 
-  async createProject(project: Project): Promise<Project> {
-    await writeProject(project);
-    const saved = await readProject(project.slug);
+  async createProject(project: Project, ownerId: string): Promise<Project> {
+    await writeProject(project, ownerId);
+    const saved = await readProject(project.slug, ownerId);
     if (!saved) throw new Error(`Project was not created: ${project.slug}`);
     return saved;
   }

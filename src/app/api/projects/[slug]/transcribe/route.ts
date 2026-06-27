@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAdapters } from "@/adapters";
 import { randomUUID } from "node:crypto";
 import { setJobState } from "@/lib/redis-jobs";
+import { requireUserId } from "@/lib/auth";
 
 // Submit a reel's uploaded video for transcription. Accepts { reelId, videoPath? }
 // where videoPath is the local file path (e.g. "/uploads/cutroom-upload-xxx.mp4").
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
   const { slug } = await params;
   const jobId = `transcribe_${randomUUID()}`;
   const { persistence, shelby, transcription } = getAdapters();
-  const project = await persistence.getProject(slug);
+  const project = await persistence.getProject(slug, await requireUserId());
   if (!project) return NextResponse.json({ error: "project not found" }, { status: 404 });
 
   const body = (await req.json()) as { audioUrl?: string; videoPath?: string; reelId: string };

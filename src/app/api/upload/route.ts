@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes, randomUUID } from "node:crypto";
 import { getAdapters } from "@/adapters";
+import { requireUserId } from "@/lib/auth";
 import { setJobState } from "@/lib/redis-jobs";
 
 export const runtime = "nodejs";
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
 
     const reelId = form.get("reelId")?.toString();
     const { persistence, shelby } = getAdapters();
-    const projects = await persistence.listProjects();
+    const projects = await persistence.listProjects(await requireUserId());
     const project = reelId
       ? projects.find((p) => p.reels.some((r) => r.id === reelId))
       : undefined;

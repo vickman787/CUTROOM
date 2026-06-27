@@ -91,9 +91,9 @@ export interface AptosAdapter {
 
 export interface PersistenceAdapter {
   mode: AdapterMode;
-  listProjects(): Promise<Project[]>;
-  getProject(slug: string): Promise<Project | null>;
-  createProject(project: Project): Promise<Project>;
+  listProjects(ownerId: string): Promise<Project[]>;
+  getProject(slug: string, ownerId: string): Promise<Project | null>;
+  createProject(project: Project, ownerId: string): Promise<Project>;
   deleteProject(projectId: string): Promise<void>;
   updateReel(projectId: string, reelId: string, data: { videoPath?: string }): Promise<Reel>;
   updateReelAnalysis(projectId: string, reelId: string, analysis: ReelAnalysis): Promise<Reel>;

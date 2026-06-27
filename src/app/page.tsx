@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 import { Wordmark } from "@/components/Wordmark";
 import { loadProjects } from "@/lib/server-projects";
 import { formatDuration } from "@/lib/time";
@@ -7,7 +8,8 @@ import { formatDuration } from "@/lib/time";
 // to the project shelf even before any project exists.
 
 export default async function Home() {
-  const projects = await loadProjects();
+  const { userId } = await auth();
+  const projects = userId ? await loadProjects() : [];
   const firstProject = projects[0];
 
   return (

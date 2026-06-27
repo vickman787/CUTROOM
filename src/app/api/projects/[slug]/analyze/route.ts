@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { getAdapters } from "@/adapters";
 import { ReelAnalysisSchema } from "@/domain/schemas";
 import { setJobState } from "@/lib/redis-jobs";
+import { requireUserId } from "@/lib/auth";
 
 // Submit a reel's transcript to Anthropic for analysis and persist the result.
 // Requires transcript segments produced by the transcribe step.
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
   const { slug } = await params;
   const jobId = `analyze_${randomUUID()}`;
   const { persistence, claude } = getAdapters();
-  const project = await persistence.getProject(slug);
+  const project = await persistence.getProject(slug, await requireUserId());
   if (!project) return NextResponse.json({ error: "project not found" }, { status: 404 });
 
   const body = (await req.json()) as { reelId: string };

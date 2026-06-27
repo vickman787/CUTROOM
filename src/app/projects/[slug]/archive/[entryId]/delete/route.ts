@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdapters } from "@/adapters";
+import { requireUserId } from "@/lib/auth";
 
 export async function POST(
   req: NextRequest,
@@ -7,7 +8,7 @@ export async function POST(
 ) {
   const { slug, entryId } = await params;
   const { persistence } = getAdapters();
-  const project = await persistence.getProject(slug);
+  const project = await persistence.getProject(slug, await requireUserId());
   if (!project) return NextResponse.json({ error: "project not found" }, { status: 404 });
 
   const entry = project.archive.find((item) => item.id === entryId);

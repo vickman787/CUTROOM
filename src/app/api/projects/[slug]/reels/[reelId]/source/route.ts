@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdapters } from "@/adapters";
+import { requireUserId } from "@/lib/auth";
 
 // Resolve the playable URL for a reel. Order of precedence:
 //   1. Per-reel REEL_SRC_<REELID> env var (case-insensitive id, alphanum).
@@ -14,7 +15,7 @@ export async function GET(
 ) {
   const { slug, reelId } = await params;
   const { persistence, shelby } = getAdapters();
-  const project = await persistence.getProject(slug);
+  const project = await persistence.getProject(slug, await requireUserId());
   if (!project) return NextResponse.json({ error: "project not found" }, { status: 404 });
   const reel = project.reels.find((r) => r.id === reelId);
   if (!reel) return NextResponse.json({ error: "reel not found" }, { status: 404 });

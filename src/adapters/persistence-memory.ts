@@ -16,21 +16,26 @@ import type { PersistenceAdapter } from "./types";
 
 const store = {
   projects: new Map<string, Project>(),
+  owners: new Map<string, string>(),
 };
 
 export class MemoryPersistenceAdapter implements PersistenceAdapter {
   mode = "local-mock" as const;
 
-  async listProjects(): Promise<Project[]> {
-    return Array.from(store.projects.values());
+  async listProjects(ownerId: string): Promise<Project[]> {
+    return Array.from(store.projects.values()).filter(
+      (project) => store.owners.get(project.id) === ownerId,
+    );
   }
 
-  async getProject(slug: string): Promise<Project | null> {
-    return store.projects.get(slug) ?? null;
+  async getProject(slug: string, ownerId: string): Promise<Project | null> {
+    const project = store.projects.get(slug);
+    return project && store.owners.get(project.id) === ownerId ? project : null;
   }
 
-  async createProject(project: Project): Promise<Project> {
+  async createProject(project: Project, ownerId: string): Promise<Project> {
     store.projects.set(project.slug, project);
+    store.owners.set(project.id, ownerId);
     return project;
   }
 
@@ -38,6 +43,7 @@ export class MemoryPersistenceAdapter implements PersistenceAdapter {
     for (const [slug, project] of store.projects.entries()) {
       if (project.id === projectId) {
         store.projects.delete(slug);
+        store.owners.delete(projectId);
         return;
       }
     }
