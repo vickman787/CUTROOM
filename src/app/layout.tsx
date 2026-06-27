@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Barlow_Condensed, EB_Garamond, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
+
 const grotesk = Barlow_Condensed({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
