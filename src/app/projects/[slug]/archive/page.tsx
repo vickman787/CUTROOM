@@ -141,6 +141,14 @@ function LedgerRow({ entry, slug, reels }: { entry: ArchiveEntry; slug: string; 
                 Open in screening room
               </button>
             </form>
+            {!sim && entry.status === "sealed" && (
+              <a
+                href={`/projects/${slug}/archive/${entry.id}/download`}
+                className="inline-block border border-ink bg-ink px-2 py-1 font-grotesk text-[10px] uppercase tracking-wider text-paper hover:border-vermilion hover:bg-vermilion"
+              >
+                Download video
+              </a>
+            )}
             <form action={`/projects/${slug}/archive/${entry.id}/delete`} method="post">
               <button
                 type="submit"
