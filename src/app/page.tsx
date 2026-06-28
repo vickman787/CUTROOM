@@ -37,17 +37,25 @@ export default async function Home() {
             </p>
 
             <div className="mt-10 flex flex-col items-start gap-3">
-              <Link
-                href="/projects"
-                className="group inline-flex items-stretch border border-ink"
-              >
-                <span className="bg-ink px-7 py-4 font-grotesk text-[14px] uppercase tracking-wider text-paper">
-                  Project shelf
-                </span>
-                <span className="bg-paper px-5 py-4 font-grotesk text-[12px] uppercase tracking-wider text-ink">
-                  Create or open a project
-                </span>
-              </Link>
+              <div className="flex flex-wrap items-stretch gap-3">
+                <Link
+                  href="/projects"
+                  className="group inline-flex items-stretch border border-ink"
+                >
+                  <span className="bg-ink px-7 py-4 font-grotesk text-[14px] uppercase tracking-wider text-paper">
+                    Project shelf
+                  </span>
+                  <span className="bg-paper px-5 py-4 font-grotesk text-[12px] uppercase tracking-wider text-ink">
+                    Create or open a project
+                  </span>
+                </Link>
+                <Link
+                  href="/tutorial"
+                  className="inline-flex items-center border border-ink bg-paper px-6 py-4 font-grotesk text-[12px] uppercase tracking-wider text-ink hover:bg-vermilion hover:text-paper"
+                >
+                  Watch tutorial
+                </Link>
+              </div>
 
               {firstProject && (
                 <Link
